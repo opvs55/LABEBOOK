@@ -23,4 +23,11 @@ CREATE TABLE post (
 
 
 
+DROP TABLE users; 
+INSERT INTO users (id, name, email, password, role)
+VALUES
+("u001", "Samuel", "samuel@samuel.com", "dsadsadasdsa", "batata");
+
+
+
 
