@@ -1,3 +1,4 @@
+import { BadRequestError } from "../errors/BadRequestError"
 import { CreateUsersInputDTO } from "../interfaces/types"
 
 

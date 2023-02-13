@@ -1,12 +1,18 @@
 import { Request, Response } from "express"
+import { UsersBusiness } from "../business/userBusiness"
+import { UsersDTO } from "../dto/usersDto"
+import { BaseError } from "../errors/BaseError"
 
 
 
 export class UserController{
-    constructor(){}
+    constructor(
+        private dto: UsersDTO,
+        private business: UsersBusiness
+    ){}
 //falta implementar DTO business
 
-    contgetUsers = async (req: Request, res: Response) => {
+    public getUsers = async (req: Request, res: Response) => {
         try {
             const input = {
                 q: req.query.q

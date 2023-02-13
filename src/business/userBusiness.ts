@@ -1,3 +1,5 @@
+import { UsersDatabase } from "../database/UsersDataBase"
+import { UsersDTO } from "../dto/usersDto"
 import { Users } from "../models/Users"
 
 
@@ -9,10 +11,10 @@ import { Users } from "../models/Users"
 
 
 
-export class CourseBusiness {
+export class UsersBusiness {
     constructor(
-      private dto: CourseDTO,
-      private database: CourseDatabase
+      private dto: UsersDTO,
+      private database: UsersDatabase
     ) {}
       public getUsers = async (input: any) => {
           const { q } = input
@@ -26,8 +28,4 @@ export class CourseBusiness {
   
           return courses
       }
-  
-     
-  
-     
   }
