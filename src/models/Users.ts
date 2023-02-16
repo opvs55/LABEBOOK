@@ -59,11 +59,11 @@ export class Users {
         this.password = value
     }
 
-    public getRole(): string {
+    public getRole(): USER_ROLES {
         return this.role
     }
     
-    public setRole(value: string): void {
+    public setRole(value: USER_ROLES ): void {
         this.role = value
     }
 

@@ -2,15 +2,23 @@ import express  from "express";
 import { UsersBusiness } from "../business/userBusiness";
 import { UserController } from "../controller/userController";
 import { UsersDatabase } from "../database/UsersDataBase";
-import { UsersDTO } from "../dto/usersDto";
+import { HashManager } from "../services/HashManage";
+import { IdGenerator } from "../services/IdGenerator";
+import { TokenManager } from "../services/TokenManager";
 
 
-export const usersRouter = express.Router()
+export const userRouter = express.Router()
 
-const controller = new UserController(
 
-    new UsersDTO(),
-    new UsersBusiness(new UsersDTO(), new UsersDatabase())
+const userController = new UserController(
+    new UsersBusiness(
+        new UsersDatabase(),
+        new IdGenerator(),
+        new TokenManager(),
+        new HashManager()
+    )
 )
 
-usersRouter.get("/", controller.getUsers)
+
+
+userRouter.post("/signup", userController.signup )
