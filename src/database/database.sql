@@ -1,5 +1,6 @@
 -- Active: 1676552731950@@127.0.0.1@3306
 
+/*1ª parte é a implementação do banco de dados da lógica que envolve a criação de tabelas e suas relações*/
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
