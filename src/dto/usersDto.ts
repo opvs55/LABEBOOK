@@ -1,25 +1,59 @@
-import { BadRequestError } from "../errors/BadRequestError"
-import { CreateUsersInputDTO } from "../interfaces/types"
+import {PostModel} from "../interfaces/types"
 
 
-
-
-
-export class UsersDTO {
-    createUsersInput = (id: unknown,name: unknown): CreateUsersInputDTO => {
-      if (typeof id !== "string") {
-        throw new BadRequestError("'id' deve ser string")
-      }
-  
-      if (typeof name !== "string") {
-        throw new BadRequestError("'name' deve ser string")
-      }
-      const result: CreateUsersInputDTO = {
-        id,
-        name,
-      }
-  
-      return result
-    }
-
+export interface SignUpInputDTO{
+  name: unknown,
+  email: unknown,
+  password: unknown
 }
+
+export interface SignUpOutputDTO{
+  token: string
+}
+
+
+/* estou tipando as estradas e saídas
+veja que Input é o valor que recebo do body da interação com o front
+e output é o que estou retornando, deste modo é dado o conceito de entrada,
+o que estou recebndo e saída, o que estou retornando. */
+
+
+export interface LoginInputDTO{
+  email: unknown,
+  password: unknown
+}
+
+export interface LoginOutputDTO{
+  token: string
+}
+
+
+export interface GetPostInputDTO{
+  token: string | undefined
+}
+
+export type GetPostOutputDTO = PostModel[]
+
+export interface CreatePostInputDTO {
+  token: string | undefined
+}
+
+export interface  EditPostInputDTO{
+  idToEdit: string,
+  token: string | undefined,
+  name: unknown
+}
+
+export interface DeletePostInputDTO{
+  idToDelete: string,
+  token: string | undefined,
+  name: unknown
+}
+
+export interface LikeOrDeslikePostInputDPO{
+  idToLikeOrDeslike: string,
+  token: string | undefined,
+  lile: unknown
+}
+
+
