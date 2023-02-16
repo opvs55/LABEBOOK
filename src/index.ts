@@ -1,15 +1,20 @@
 import express from "express"
 import cors from "cors"
-import { usersRouter } from "./router/UsersRouter"
+import dotenv from "dotenv"
+import { userRouter } from "./router/UsersRouter"
+
+
+
+dotenv.config()
 
 const app = express()
-
 
 app.use(cors())
 app.use(express.json())
 
 
-app.listen(3003, () => console.log("server rodando na porta 3003" ))
+app.listen(Number(process.env.PORT), () => {
+    console.log(`Servidor rodando na porta ${process.env.PORT}`)
+})
 
-
-app.use("/users", usersRouter)
+app.use("/users", userRouter)
