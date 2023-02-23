@@ -1,8 +1,8 @@
 import express  from "express";
-import { UsersBusiness } from "../business/userBusiness";
+import { UsersBusiness } from "../business/UserBusiness";
 import { UserController } from "../controller/userController";
 import { UsersDatabase } from "../database/UsersDataBase";
-import { HashManager } from "../services/HashManage";
+import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
 
@@ -21,4 +21,5 @@ const userController = new UserController(
 
 
 
-userRouter.post("/signup", userController.signup )
+userRouter.post("/signup", userController.signup)
+userRouter.post("/login", userController.login)
