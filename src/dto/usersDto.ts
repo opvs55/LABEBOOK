@@ -1,15 +1,16 @@
 import {PostModel} from "../interfaces/types"
 
 
-export interface SignUpInputDTO{
+export interface SignupInputDTO {
   name: unknown,
   email: unknown,
   password: unknown
 }
 
-export interface SignUpOutputDTO{
+export interface SignupOutputDTO {
   token: string
 }
+
 
 
 /* estou tipando as estradas e saídas
