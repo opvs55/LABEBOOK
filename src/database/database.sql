@@ -93,7 +93,5 @@ WHERE id = "p002";
 
 
 
-SELECT * FROM users;
+SELECT * FROM post;
 
-
-DROP TABLE users;
