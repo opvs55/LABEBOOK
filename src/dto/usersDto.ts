@@ -40,10 +40,10 @@ export interface CreatePostInputDTO {
   context: unknown
 }
 
-export interface  EditPostInputDTO{
+export interface EditPostInputDTO{
   idToEdit: string,
   token: string | undefined,
-  name: unknown
+  context: unknown
 }
 
 export interface DeletePostInputDTO{

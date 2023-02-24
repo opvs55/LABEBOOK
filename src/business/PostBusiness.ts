@@ -1,7 +1,8 @@
 import { PostDataBase } from "../database/PostDatabase";
-import { CreatePostInputDTO, GetPostInputDTO, GetPostOutputDTO } from "../dto/usersDto";
+import { CreatePostInputDTO, EditPostInputDTO, GetPostInputDTO, GetPostOutputDTO } from "../dto/usersDto";
 import { BadRequestError } from "../errors/BadRequestError";
-import { PostWithCreatorNameDB } from "../interfaces/types";
+import { NotFoundError } from "../errors/NotFoundError";
+import { PostDB, PostWithCreatorNameDB } from "../interfaces/types";
 import { Post } from "../models/Post";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
@@ -91,5 +92,56 @@ export class PostBusiness{
 
         const postDB = post.ToDBModel()
         await this.postDataBase.insert(postDB)
+    }
+
+    public editPost = async (input: EditPostInputDTO): Promise<void> => {
+
+        const {idToEdit, token, context } = input
+
+        if(token === undefined){
+            throw new BadRequestError("token ausente")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if(payload == null){
+            throw new BadRequestError("token invalido")
+        }
+
+        if(typeof context !== "string"){
+            throw new BadRequestError("name deve ser string")
+        }
+
+        const postDB = await this.postDataBase.findByID(idToEdit)
+
+        if(!postDB){
+            throw new NotFoundError("Id não encontrado")
+        }
+
+        const creatorId = payload.id
+
+        if(postDB.creator_id !== creatorId){
+            throw new BadRequestError("Você não criou a postagem!")
+        }
+
+        const creatorName = payload.name
+
+        const post = new Post(
+            postDB.id,
+            postDB.context,
+            postDB.likes,
+            postDB.dislikes,
+            postDB.created_at,
+            postDB.updated_at,
+            creatorId,
+            creatorName
+        )
+
+        post.setContext(context)
+        post.setUpdatedAt(new Date().toISOString())
+
+        const upPostDB = post.ToDBModel()
+
+        await this.postDataBase.update(idToEdit, upPostDB)
     }
 }
