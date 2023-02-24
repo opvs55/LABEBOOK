@@ -1,5 +1,5 @@
 import { PostDataBase } from "../database/PostDatabase";
-import { GetPostInputDTO, GetPostOutputDTO } from "../dto/usersDto";
+import { CreatePostInputDTO, GetPostInputDTO, GetPostOutputDTO } from "../dto/usersDto";
 import { BadRequestError } from "../errors/BadRequestError";
 import { PostWithCreatorNameDB } from "../interfaces/types";
 import { Post } from "../models/Post";
@@ -52,5 +52,44 @@ export class PostBusiness{
         const output: GetPostOutputDTO = post
 
         return output
+    }
+
+    public createPost = async (input: CreatePostInputDTO): Promise<void> => {
+        const {token, context} = input
+
+        if(token === undefined){
+            throw new BadRequestError("token ausente")
+        }
+
+        if(typeof context !== "string"){
+            throw new BadRequestError("Context deve ser string")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if(payload == null){
+            throw new BadRequestError("token invalido")
+        }
+
+
+        const id = this.idGenerator.generate()
+        const createAt = new Date().toISOString()
+        const updateAt = new Date().toISOString()
+        const creatorId = payload.id
+        const creatorName = payload.name
+
+        const post = new Post(
+            id,
+            context,
+            0,
+            0,
+            createAt,
+            updateAt,
+            creatorId,
+            creatorName
+        )
+
+        const postDB = post.ToDBModel()
+        await this.postDataBase.insert(postDB)
     }
 }
