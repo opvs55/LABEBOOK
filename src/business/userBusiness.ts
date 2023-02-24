@@ -88,13 +88,12 @@ export class UsersBusiness {
       console.log(userDB.password)
       console.log(isPasswordCorrect)
 
+      //erro resolvido
+
       if (!isPasswordCorrect) {
         throw new BadRequestError("'password' incorreto")
       }
 
-      //tirei o ! pois não sei por qual razão o compare não está funcionando.
-      //tentei tudo, o valores chegam, usei console.log para testar
-      //porém a if sempre está dando false
 
       const user = new Users(
         userDB.id,
