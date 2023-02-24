@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { PostBusiness } from "../business/PostBusiness"
-import { GetPostInputDTO } from "../dto/usersDto"
+import { CreatePostInputDTO, GetPostInputDTO } from "../dto/usersDto"
 import { BaseError } from "../errors/BaseError"
 
 export class PostController{
@@ -18,6 +18,27 @@ export class PostController{
 
             res.status(200).send(output)
 
+        } catch (error) {
+            console.log(error)
+            if(error instanceof BaseError){
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("erro inesperado")
+            }
+        }  
+    }
+
+    public createPost = async (req:Request, res: Response) => {
+        try {
+
+            const input: CreatePostInputDTO = {
+                token: req.headers.authorization,
+                context: req.body.context
+            }
+        
+            await this.postBusiness.createPost(input)
+
+            res.status(201).send("sucesso").end
         } catch (error) {
             console.log(error)
             if(error instanceof BaseError){
