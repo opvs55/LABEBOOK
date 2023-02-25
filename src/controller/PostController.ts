@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { PostBusiness } from "../business/PostBusiness"
-import { CreatePostInputDTO, EditPostInputDTO, GetPostInputDTO } from "../dto/usersDto"
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO } from "../dto/usersDto"
 import { BaseError } from "../errors/BaseError"
 
 export class PostController{
@@ -63,6 +63,27 @@ export class PostController{
 
             res.status(200).end()
             
+        } catch (error) {
+            console.log(error)
+            if(error instanceof BaseError){
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("erro inesperado")
+            }
+        }  
+    }
+
+    public deletePost = async (req:Request, res: Response) => {
+        try {
+
+           const input: DeletePostInputDTO = {
+                idToDelete: req.params.id,
+                token: req.headers.authorization
+           }
+
+           await this.postBusiness.deletePost(input)
+
+           res.status(200).end()
         } catch (error) {
             console.log(error)
             if(error instanceof BaseError){
