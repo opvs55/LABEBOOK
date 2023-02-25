@@ -57,6 +57,11 @@ export interface PostDB{
   updated_at: string 
 }
 
+export enum POST_LIKE{
+  ALREADY_LIKED = "Already Liked",
+  ALREADY_DISLIKED = "Already Disliked"
+}
+
 
 export interface PostWithCreatorNameDB extends PostDB {
   creator_name: string 

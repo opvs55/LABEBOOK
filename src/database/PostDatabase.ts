@@ -1,4 +1,4 @@
-import { LikesDislikesDB, PostDB, PostWithCreatorNameDB } from "../interfaces/types";
+import { LikesDislikesDB, PostDB, PostWithCreatorNameDB, POST_LIKE } from "../interfaces/types";
 import { BaseDatabase } from "./BaseDataBase";
 
 export class PostDataBase extends BaseDatabase{
@@ -76,4 +76,49 @@ export class PostDataBase extends BaseDatabase{
         await BaseDatabase.connection(PostDataBase.TABLE_LIKES_DISLIKES)
         .insert(likeDislike)
     }
+
+    public findlikeDislikePost = async (
+        likeDislikeDBToFind: LikesDislikesDB
+    ): Promise< POST_LIKE |null> => {
+        const [likeDislikeDB] : LikesDislikesDB[] = await BaseDatabase
+        .connection(PostDataBase.TABLE_LIKES_DISLIKES)
+        .select()
+        .where({
+            user_id: likeDislikeDBToFind.user_id,
+            post_id: likeDislikeDBToFind.post_id
+        })
+
+        if(likeDislikeDB){
+            return likeDislikeDB.like === 1 ? 
+            POST_LIKE.ALREADY_LIKED : 
+            POST_LIKE.ALREADY_DISLIKED
+        } else {
+            return null
+        }
+    }
+
+    public removeLikeDislike = async (
+        likeDislikeDB: LikesDislikesDB
+    ): Promise<void>=> {
+        await BaseDatabase
+        .connection(PostDataBase.TABLE_LIKES_DISLIKES)
+        .delete()
+        .where({
+            user_id: likeDislikeDB.user_id,
+            post_id: likeDislikeDB.post_id
+        })
+    }
+
+    public updateLikeDislike = async (
+        likeDislikeDB: LikesDislikesDB
+    ): Promise<void>=> {
+        await BaseDatabase
+        .connection(PostDataBase.TABLE_LIKES_DISLIKES)
+        .update(likeDislikeDB)
+        .where({
+            user_id: likeDislikeDB.user_id,
+            post_id: likeDislikeDB.post_id
+        })
+    }
+
 }
