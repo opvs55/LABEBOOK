@@ -1,8 +1,8 @@
 import { PostDataBase } from "../database/PostDatabase";
-import { CreatePostInputDTO, EditPostInputDTO, GetPostInputDTO, GetPostOutputDTO } from "../dto/usersDto";
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO, GetPostOutputDTO } from "../dto/usersDto";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
-import { PostDB, PostWithCreatorNameDB } from "../interfaces/types";
+import { PostDB, PostWithCreatorNameDB, USER_ROLES } from "../interfaces/types";
 import { Post } from "../models/Post";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
@@ -143,5 +143,35 @@ export class PostBusiness{
         const upPostDB = post.ToDBModel()
 
         await this.postDataBase.update(idToEdit, upPostDB)
+    }
+
+    public deletePost = async (input: DeletePostInputDTO): Promise<void> => {
+
+        const {idToDelete, token } = input
+
+        if(token === undefined){
+            throw new BadRequestError("token ausente")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if(payload == null){
+            throw new BadRequestError("token invalido")
+        }
+
+        const postDB = await this.postDataBase.findByID(idToDelete)
+
+        if(!postDB){
+            throw new NotFoundError("Id não encontrado")
+        }
+
+        const creatorId = payload.id
+
+        if(postDB.creator_id !== creatorId || payload.role == USER_ROLES.NORMAL){
+            throw new BadRequestError("Você não criou a postagem ou não é adm!")
+        }
+
+
+        await this.postDataBase.delete(idToDelete)
     }
 }
