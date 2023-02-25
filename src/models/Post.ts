@@ -37,19 +37,19 @@ export class Post{
     }
 
     public addLike(){
-        this.likes =+ 1
+        this.likes += 1
     }
 
     public removeLike(){
-        this.likes =- 1
+        this.likes -= 1
     }
 
     public addDislikes(){
-        this.dislikes =+ 1
+        this.dislikes += 1
     }
 
     public removeDislikes(){
-        this.dislikes =- 1
+        this.dislikes -= 1
     }
 
     public getDislikes(): number {

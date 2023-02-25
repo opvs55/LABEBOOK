@@ -2,7 +2,7 @@ import { PostDataBase } from "../database/PostDatabase";
 import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO, GetPostOutputDTO, LikeOrDeslikePostInputDPO } from "../dto/usersDto";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
-import { LikesDislikesDB, PostWithCreatorNameDB, USER_ROLES } from "../interfaces/types";
+import { LikesDislikesDB, PostWithCreatorNameDB, POST_LIKE, USER_ROLES } from "../interfaces/types";
 import { Post } from "../models/Post";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
@@ -168,7 +168,7 @@ export class PostBusiness{
         const creatorId = payload.id
 
         if(payload.role !== USER_ROLES.ADMIN && postDB.creator_id !== creatorId){
-            throw new BadRequestError("Você não criou pode deleta-la ou um ADM!")
+            throw new BadRequestError("Apenas o user criador da postagem ou ADM's podem deletar!")
         }
 
 
@@ -208,8 +208,9 @@ export class PostBusiness{
             like: likeCondition
         }
 
+        
 
-        await this.postDataBase.likeOrDislikePost(likeDislikeDB)
+        const postLikeOrDislikeConfirm = await this.postDataBase.findlikeDislikePost(likeDislikeDB)
 
         const post = new Post(
             postWithCreatorDB.id,
@@ -222,15 +223,34 @@ export class PostBusiness{
             postWithCreatorDB.creator_name 
         )
 
-        if(like){
-            post.addLike()
-        }else{
-            post.removeLike()
+        if( postLikeOrDislikeConfirm  === POST_LIKE.ALREADY_LIKED){
+            if(like){
+                await this.postDataBase.removeLikeDislike(likeDislikeDB)
+                post.removeLike()
+            } else {
+                await this.postDataBase.updateLikeDislike(likeDislikeDB)
+                post.removeLike()
+                post.addDislikes()
+            }
+        } else if (postLikeOrDislikeConfirm  === POST_LIKE.ALREADY_DISLIKED){
+            if(like){
+                await this.postDataBase.updateLikeDislike(likeDislikeDB)
+                post.removeDislikes()
+                post.addLike()
+            } else {
+                await this.postDataBase.removeLikeDislike(likeDislikeDB)
+                post.removeDislikes()
+            }
+        } else {
+            await this.postDataBase.likeOrDislikePost(likeDislikeDB)
+            if(like){
+                post.addLike()
+            }else{
+                post.removeLike()
+            } 
         }
-        
-
         const updatePostDB = post.ToDBModel()
 
         await this.postDataBase.update(idToLikeOrDeslike, updatePostDB)
-    }
+    }   
 }
