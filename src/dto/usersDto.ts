@@ -54,7 +54,7 @@ export interface DeletePostInputDTO{
 export interface LikeOrDeslikePostInputDPO{
   idToLikeOrDeslike: string,
   token: string | undefined,
-  lile: unknown
+  like: unknown
 }
 
 
